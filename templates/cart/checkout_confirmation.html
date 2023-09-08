@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style> 
+    /* Custom styles for order confirmation */
+    .confirmation-container {
+        padding: 30px;
+        background-color: #f7f7f7;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 30px auto;
+        max-width: 600px;
+    }
+
+    .confirmation-container h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .confirmation-message {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .order-details {
+        list-style: none;
+        padding: 0;
+    }
+
+    .order-details li {
+        margin-bottom: 10px;
+    }
+
+    .shipping-address {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 10px;
+    }
+
+    .shipping-address li {
+        margin-bottom: 5px;
+    }
+
+    .no-order-message {
+        font-size: 18px;
+        color: #d9534f;
+        margin-top: 20px;
+    }
+
+    /* Center the container on the page */
+    .confirmation-container {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="checkout_area pt-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2 class="mb-4">Thank You for Your Order!</h2>
+                <p>Your order has been successfully placed. We appreciate your business.</p>
+                <p>An email confirmation with order details will be sent to you shortly.</p>
+                <p>If you have any questions or need assistance, please contact our customer support.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="confirmation-container">
+    <h2>Order Confirmation</h2>
+    {% if order %}
+    <p class="confirmation-message">Thank you for your order! Here are the details:</p>
+    <ul class="order-details">
+        <li><strong>Order Number:</strong> {{ order.order_number }}</li>
+        <li><strong>Total Amount:</strong> ₹ {{ order.order_total }}</li>
+        <li><strong>Shipping Address:</strong></li>
+        <ul class="shipping-address">
+            <li>{{ order.first_name }} {{ order.last_name }}</li>
+            <li>{{ order.address }}</li>
+            <li>{{ order.city }}, {{ order.pincode }}</li>
+            <li>{{ order.country }}</li>
+        </ul>
+    </ul>
+    {% else %}
+    <p class="no-order-message">No order confirmation available.</p>
+    {% endif %}
+</div>
+{% endblock %}

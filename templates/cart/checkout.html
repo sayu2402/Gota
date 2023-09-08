@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* Style for the buttons */
+    .payment-button {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .paywithRazorpay {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-right: 10px;
+        background-color: #17a2b8;
+        border: none;
+        color: #fff;
+    }
+
+    .paywithRazorpay:hover {
+        background-color: #138496;
+    }
+
+    /* Style for form errors */
+    #form-errors {
+        color: #ff0000;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="checkout_area pt-80">
+    <div class="container">
+    <form id="order-form" method="POST" action="{% url 'place_order' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="mb-4">Choose Shipping Address</h3>
+                <div class="row">
+                    {% for i in new_address_info %}
+                            <div class="col-md-6 mb-4">
+                                <div class="address-card p-4 border">
+                                    <label class="tick-mark">
+                                        <input type="radio" name="selected_address" value="{{ i.id }}">
+                                        <span class="checkmark"></span>
+
+                                    </label>
+                                    <h5 class="mb-3">{{ i.first_name }} {{ i.last_name }}</h5>
+                                    <p class="mb-2"><strong>Address:</strong> {{ i.address }}</p>
+                                    <p class="mb-2"><strong>City:</strong> {{ i.city }}</p>
+                                    <p class="mb-2"><strong>Pincode:</strong> {{ i.pincode }}</p>
+                                    <p class="mb-2"><strong>Phone:</strong> {{ i.phone }}</p>
+                                    <p class="mb-2"><strong>Email:</strong> {{ i.email }}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'edit_address_checkout' edit_id=i.id %}" class="btn btn-primary">Edit</a>
+                                        <a href="{% url 'delete_address_checkout' delete_id=i.id %}" class="btn btn-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                    {% endfor %}
+
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'add_new_adress' %}" class="btn btn-success">Add New Address</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="cart__acount ml-50">
+                    <h5>Your order</h5>
+                    <table>
+                        {% for cart_item in cart_items %}
+                        <tr>
+                            <td>Product</td>
+                            <td>{{ cart_item.product.product_name }}<span>× {{ cart_item.quantity }}</span></td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="first-child-2">
+                            <td>Subtotal</td>
+                            <td class="lightbluee">₹ {{ total }}</td>
+                        </tr>
+                        <tr class="first-child lastchild">
+                            <td>Tax</td>
+                            <td class="lightbluee">₹ {{ tax }}</td>
+                        </tr>
+                        {% comment %} <tr class="first-child-2">
+                            <td>Coupon Discount</td>
+                            <td class="lightbluee">₹ {{ coupon_discount }}</td> <!-- Display the coupon discount -->
+                        </tr> {% endcomment %}
+                        <tr class="first-child">
+                            <td>Total</td>
+                            <td class="lightbluee">₹ {{ grand_total }}</td>
+                        </tr>
+                    </table>
+                    <div class="checkout__accordion mt-30">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                                <button type="submit" name="payment_method" value="cash_on_delivery" class="btn btn-primary payment-button">
+                                    Cash on Delivery
+                                </button>
+                                <button type="button" class="button alt mt-3 paywithRazorpay" data-proceed-url="{% url 'payment' %}" 
+                                name="paymentMethod" value="Razorpay">Razorpay</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+            
+        </div>
+    
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.paywithRazorpay').click(function (e) {
+            e.preventDefault();
+            var proceedUrl = $(this).data('proceed-url');
+            var token = "{{ csrf_token }}"; // Django CSRF token
+            var placeOrderUrl = "{% url 'place_order' %}";  // URL of the place_order view
+            var checkoutConfirmationUrl = "{% url 'checkout_confirmation' %}";  // URL of the checkout_confirmation view
+            
+            // Validate the form and prepare data
+            var form = $('#order-form');  // Update with your form ID
+            if (!form[0].checkValidity()) {
+                form[0].reportValidity();
+                return;
+            }
+
+            // Capture selected address data
+            var selectedAddressId = $("input[name='selected_address']:checked").val(); // Assuming a radio input for selecting address
+            var selectedAddress = {
+                selected_address: selectedAddressId
+            };
+
+            var formData = form.serialize();
+
+            // Merge the selected address data into the form data
+            formData = Object.assign(formData, selectedAddress);
+
+            $.ajax({
+                method: "POST",
+                url: proceedUrl,
+                data: formData,
+                headers: {
+                    "X-CSRFToken": token // Include the CSRF token in the headers
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    var userFullName = "{{ user.first_name }}"; 
+                    var userEmail = "{{ user.email }}"; 
+                    var userContact = "{{ user.phone }}";
+
+                    var options = {
+                        key: "rzp_test_yv38VjpIHfWohF",
+                        //amount: response.grand_total * 100, // Amount in currency subunits (INR)
+                        amount: 1*100,
+                        currency: "INR",
+                        name: "GOTA Shoes",
+                        description: "Thank you",
+                        image: "https://example.com/your_logo",
+                        handler: function (response) {
+                            var data = {
+                                'selected_address': selectedAddressId,
+                                'paymentMethod': "paid by Razorpay",
+                                csrfmiddlewaretoken: token
+                            };
+                            $.ajax({
+                                method: "POST",
+                                url: placeOrderUrl,
+                                data: data,
+                                success: function (responsec) {
+                                    console.log("Order placed successfully:", responsec);
+                                    Swal.fire({
+                                        title: 'Congratulations!',
+                                        text: responsec.message,
+                                        icon: 'success'
+                                    }).then((value) => {
+                                        console.log("Redirecting to checkout_confirmation page...");
+                                        window.location.href = checkoutConfirmationUrl;
+                                    });
+                                    
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.error("Error placing order:", textStatus, errorThrown);
+                                }
+                            });
+                        },
+                        prefill: {
+                            name: userFullName,
+                            email: userEmail,
+                            contact: userContact
+                        },
+                        notes: {
+                            address: "Razorpay Corporate Office"
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error("Error requesting Razorpay payment:", textStatus, errorThrown);
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

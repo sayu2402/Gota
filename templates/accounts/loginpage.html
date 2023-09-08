@@ -1,0 +1,64 @@
+
+    {% extends 'base.html' %}
+    
+    {% load static %}
+
+    {% block content %}
+
+    <div class="page-layout about" data-background="{% static 'assets/img/slider/center_image2.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="breadcrumb-area text-center">
+                        <h2 class="page-title">Account Login</h2>
+                            <div class="breadcrumb-menu">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center">
+                                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                    <li class="breadcrumb-item"><a href={% url 'loginpage' %}>Login</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login_register_area">
+        <div class="container">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12 offset-xl-1">
+                    <h3 class="title-7">Login</h3>
+                    <div class="login_wrapper">
+                        <form action="{% url 'loginpage' %}" method="POST">
+                            {% include 'includes/alert.html' %}
+                            {% csrf_token %}
+                            <div class="input_wrap">
+                                <label>Email<span>*</span></label>
+                                <input type="text" name="email">
+                            </div>
+                            <div class="input_wrap">
+                                <label>Password<span>*</span></label>
+                                <input type="password" name="password">
+                            </div>
+                            {% comment %} <div class="input_wrap">
+                                <a href="#">Lost your password?</a>
+                            </div> {% endcomment %}
+                            <div class="input_wrap">
+                                <button type="submit">Log in</button>
+                            </div>
+                            <div class="input_wrap">
+                                <h6 style="display: inline;">Don't have an Account? </h6>
+                                <a href="{% url 'signup' %}" style="display: inline;">SignUp</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>    
+
+{% endblock %}
+

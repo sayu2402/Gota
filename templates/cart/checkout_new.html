@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* Style for the buttons */
+    .payment-button {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .paywithRazorpay {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-right: 10px;
+        background-color: #17a2b8;
+        border: none;
+        color: #fff;
+    }
+
+    .paywithRazorpay:hover {
+        background-color: #138496;
+    }
+
+    /* Style for form errors */
+    #form-errors {
+        color: #ff0000;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+
+<div class="checkout_area pt-80">
+        <div class="container">
+            {% comment %} <div class="notification__message">
+                <p><i class="fal fa-window-maximize"></i>Returning customer? Click here to <a href="login.html">login</a></p>
+                <p><i class="fal fa-window-maximize"></i>Have a coupon? Click here to enter your code</p>
+            </div> {% endcomment %}
+            <div class="row">
+                <div class="col-xl-7 col-lg-7 col-md-12">
+                    <div class="checkout_form mb-100">
+                        <form id="order-form" action="{% url 'place_order' %}" method="POST">
+
+                            {% include 'includes/alert.html' %} 
+                            
+                            {% csrf_token %}
+                            <div class="row mb-30">
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="checkout__wrap">
+                                        <label>First name <span>*</span></label>
+                                        {% comment %} <input type="text" name="fname"> {% endcomment %}
+                                        {{ form.first_name }}
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="checkout__wrap">
+                                        <label>Last name <span>*</span></label>
+                                        {% comment %} <input type="text" name="lname"> {% endcomment %}
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Company name (optional) <span></span></label>
+                                {% comment %} <input type="text" name="cname"> {% endcomment %}
+                                {{ form.company }}
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Street address <span>*</span></label>
+                                {% comment %} <input class="mb-20" type="text" name="add1" placeholder="house number and street number"> {% endcomment %}
+                                {{ form.address }}
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Town / City *<span></span></label>
+                                {% comment %} <input type="text" name="town"> {% endcomment %}
+                                {{ form.city }}
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>County <span>*</span></label>
+                                {% comment %} <input type="text" name="country"> {% endcomment %}
+                                {{ form.country }}
+                            </div>
+                            <div class="checkout__wrap" >
+                                <label>Pinccode<span>*</span></label>
+                                {% comment %} <input type="text" name="postcode"> {% endcomment %}
+                                {{ form.pincode }}
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Phone <span>*</span></label>
+                                {% comment %} <input type="text" name="phone"> {% endcomment %}
+                                {{ form.phone }}
+                            </div>
+                            <div class="checkout__wrap">
+                                <label>Email address <span>*</span></label>
+                                {% comment %}<input type="email" name="email"> {% endcomment %}
+                                {{ form.email }}
+                            </div>
+                            {% comment %} <div class="checkout__wrap-2 pt-20">
+                                <input type="checkbox" name="check1">
+                                <span>Create an account?</span>
+                            </div>
+                            <div class="checkout__wrap-2 pt-20">
+                                <input type="checkbox" name="check2">
+                                <span>Ship to a different address?</span>
+                            </div> {% endcomment %}
+                            <div class="checkout__wrap">
+                                <label>Order notes (optional) <span></span></label>
+                                {% comment %} <textarea  name="ordernote" placeholder="Note about your order, e.g special note for delivery"></textarea> {% endcomment %}
+                                {{ form.order_note }}
+                            </div>
+                        
+                    </div>
+                </div>
+             <div class="col-xl-5 col-lg-5 col-md-12">
+                    <div class="cart__acount ml-50">
+                        <h5>Your order</h5>
+                        <table>
+                            {% for cart_item in cart_items %}
+                              <tr>
+                                <td>Product</td>
+                                <td>{{ cart_item.product.product_name }}<span>× {{ cart_item.quantity }}</span></td>
+                              </tr>
+                            {% endfor %}
+                            <tr class="first-child-2">
+                              <td>Subtotal</td>
+                              <td class="lightbluee">₹ {{ total }}</td>
+                            </tr>
+                            <tr class="first-child lastchild">
+                              <td>Tax</td>
+                              <td class="lightbluee">₹ {{ tax }}</td>
+                            </tr>
+                            {% comment %} <tr class="first-child-2">
+                                <td>Coupon Discount</td>
+                                <td class="lightbluee">₹ {{ coupon_discount }}</td> <!-- Display the coupon discount -->
+                            </tr> {% endcomment %}
+                            <tr class="first-child">
+                              <td>Total</td>
+                              <td class="lightbluee">₹ {{ grand_total }}</td>
+                            </tr>
+                          </table>
+                          
+                      <div class="checkout__accordion mt-30">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingOne">
+                                {% comment %} <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Check payments 
+                                </button> {% endcomment %}
+                              </h2>
+                              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                {% comment %} <div class="accordion-body">
+                                    Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.
+                                </div> {% endcomment %}
+                              </div>
+                            </div>
+                            <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                                <button type="submit" name="payment_method" value="cash_on_delivery" class="btn btn-primary payment-button">
+                                    Cash On Delivery
+                                </button>
+                                <button type="button" class="button alt mt-3 paywithRazorpay" data-proceed-url="{% url 'payment' %}" 
+                                name="paymentMethod" value="Razorpay">Razorpay</button>
+                            </div>
+                          </div>
+                      </div>
+                 </form>
+               </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        $(document).ready(function () {
+            $('.paywithRazorpay').click(function (e) {
+                e.preventDefault();
+                var proceedUrl = $(this).data('proceed-url');
+                var token = "{{ csrf_token }}"; // Django CSRF token
+                var placeOrderUrl = "{% url 'place_order' %}";  // URL of the place_order view
+                var checkoutConfirmationUrl = "{% url 'checkout_confirmation' %}";  // URL of the checkout_confirmation view
+                
+                // Validate the form and prepare data
+                var form = $('#order-form');  // Update with your form ID
+                if (!form[0].checkValidity()) {
+                    form[0].reportValidity();
+                    return;
+                }
+    
+                var formData = form.serialize();
+
+                
+
+
+                $.ajax({
+                    method: "POST",
+                    url: proceedUrl,
+                    data: formData,
+                    headers: {
+                        "X-CSRFToken": token // Include the CSRF token in the headers
+                    },
+                    success: function (response) {
+                        console.log(response);
+    
+                        var userFullName = "{{ user.first_name }}"; 
+                        var userEmail = "{{ user.email }}"; 
+                        var userContact = "{{ user.phone }}";
+    
+                        var options = {
+                            key: "rzp_test_yv38VjpIHfWohF",
+                            amount: response.grand_total * 100, // Amount in currency subunits (INR)
+                            //amount: 1*100,
+                            currency: "INR",
+                            name: "GOTA Shoes",
+                            description: "Thank you For Buying From Us",
+                            image: "https://example.com/your_logo",
+                            handler: function (response) {
+                                var data = {
+                                    paymentMethod: "paid by Razorpay",
+                                    csrfmiddlewaretoken: token,
+                                };
+                
+                                // Merge the form data into the data object
+                                for (var pair of formData.split('&')) {
+                                    var keyValue = pair.split('=');
+                                    data[keyValue[0]] = decodeURIComponent(keyValue[1]);
+                                }
+                                $.ajax({
+                                    method: "POST",
+                                    url: placeOrderUrl,
+                                    data: data,
+                                    success: function (responsec) {
+                                        console.log("Order placed successfully:", responsec);
+                                        Swal.fire({
+                                            title: 'Congratulations!',
+                                            text: responsec.message,
+                                            icon: 'success'
+                                        }).then((value) => {
+                                            console.log("Redirecting to checkout_confirmation page...");
+                                            window.location.href = checkoutConfirmationUrl;
+                                        });
+                                        
+                                    },
+                                    error: function (xhr, textStatus, errorThrown) {
+                                        console.error("Error placing order:", textStatus, errorThrown);
+                                    }
+                                });
+                            },
+                            prefill: {
+                                name: userFullName,
+                                email: userEmail,
+                                contact: userContact
+                            },
+                            notes: {
+                                address: "Razorpay Corporate Office"
+                            },
+                            theme: {
+                                color: "#3399cc"
+                            }
+                        };
+    
+                        var rzp1 = new Razorpay(options);
+                        rzp1.open();
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error requesting Razorpay payment:", textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}

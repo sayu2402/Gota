@@ -1,0 +1,126 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+    <h1>Admin Product List</h1>
+
+    <table class="product-list-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_name }}</td>
+                <td>₹{{ product.price|floatformat:2 }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ product.category }}</td>
+                <td>
+                    <img src="{{ product.images.url }}" alt="{{ product.product_name }}" style="max-width: 70px;">
+                </td>
+                <td>{% if product.is_available %}Available{% else %}Not Available{% endif %}</td>
+                
+                <td>
+                    <!-- Add button for view/edit product details -->
+                    <a href="{% url 'product_edit' product.slug %}" class="btn">View/Edit</a>
+                    <!-- Delete button to delete the product -->
+                    <form id="deleteForm_{{ product.slug }}" action="{% url 'product_delete' product.slug %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="button" class="btn delete" onclick="confirmDelete('{{ product.slug }}')">Delete</button>
+                    </form>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <style>
+        /* Existing styles for admin product list section */
+        .product-list-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .product-list-table th,
+        .product-list-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .product-list-table th {
+            background-color: #f2f2f2;
+        }
+
+        .product-list-table td:last-child {
+            white-space: nowrap;
+        }
+
+        /* Existing styles for add-product button */
+        .add-product-btn {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn.delete {
+            background-color : red;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Additional styles as per your requirements */
+    </style>
+
+
+
+<!-- Include SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+<!-- Include SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+<script>
+    function confirmDelete(slug) {
+        console.log('Delete function called with slug:', slug);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            console.log('SweetAlert result:', result);
+
+            if (result.isConfirmed) {
+                console.log('Submitting form for slug:', slug);
+                document.getElementById('deleteForm_' + slug).submit();
+            }
+        });
+    }
+</script>
+
+
+{% endblock %}

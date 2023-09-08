@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{%load static %}
+{% block content %}
+    <style>
+        /* Apply styles to the order history container */
+        .order-history {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style the order table */
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #f2f2f2;
+        }
+
+        /* Style the cancel button */
+        .cancel-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        /* Add more styles as needed */
+    </style>
+
+    <div class="order-history">
+        {% include 'includes/alert.html' %}
+        <h1>Your Order History</h1>
+        {% if orders %}
+            <p>Total Orders: {{ orders_count }}</p>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                        <th>View Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.order_number }}</td>
+                            <td>{{ order.created_at|date:"F d, Y" }}</td>
+                            <td>₹ {{ order.discounted_total|floatformat:2 }}</td>
+                            <td>{{ order.get_status_display }}</td>
+                            <td>                            
+                                <form method="post" action="{% url 'cancel_order_user' order.id %}">
+                                    {% csrf_token %}
+                                    {% if order.status != 'Cancelled' and order.status != 'Delivered' %}
+                                    <button type="submit" class="btn btn-lg font-sm rounded btn-brand" style="background-color: red; color: white;" onclick="return confirm('Are you sure you want to cancel this order?');">
+                                        <i class="material-icons md-delete_forever"></i> Cancel Order
+                                    </button>
+                                    {% endif %}
+                                </form>    
+                                                                                           
+                            </td>
+                            <td>
+                                <a href="{% url 'user_view_order' order_id=order.id %}" class="btn btn-xs">View details</a>
+                            </td>                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            {% comment %} <p>No orders yet.</p>
+            <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a> {% endcomment %}
+    <!-- Empty Wishlist -->
+    <strong>No Order Yet</strong>
+    <div class="text-center">
+        
+        <img src="{% static 'assets\img\shop\empty-wishlist.png' %}" alt="Empty Cart Image">
+        <br>
+        
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+    </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

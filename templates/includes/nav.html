@@ -1,0 +1,66 @@
+{% load static %}
+
+<header class="header-area">
+    <div class="gota_top bg-soft d-none d-sm-block">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="gota_lang"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="gota_bottom position-relative">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 d-none d-sm-block">
+                    <div class="gota_search">
+                        <form class="search_form" action="{% url 'search' %}" method="GET">
+                            <button class="search_action"><i class="fal fa-search d-sm-none d-md-block"></i></button>
+                            <input type="text" name="keyword" placeholder="search" >
+                        </form>
+                    </div>                    
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-4 col-sm-4">
+                    <div class="sidemenu sidemenu-1 d-lg-none d-md-block">
+                        <a class="open" href="#"><i class="fal fa-bars"></i></a>
+                    </div>
+                    <div class="main-menu">
+                        <nav id="mobile-menu">
+                            <ul>
+                                <li><a href="{% url 'home' %}">Home</a></li>
+                                <li><a href="{% url 'store' %}">Shop </a></li>
+                                <li><a href="">About</a></li>
+
+                                <li><a class="d-none d-xl-block" href="{% url 'home' %}">
+                                        <img class="pl-50 pr-50" src="{% static 'assets/img/logo/logo-1.png' %}" alt="">
+                                    </a></li>
+
+                                <li><a href="">contact us </a></li>
+                                <li><a href="{% url 'wishlist' %}">Wishlist </a></li>
+
+                                {% if user.id is None %}
+                                <li><a href="{% url 'loginpage' %}">Login</a></li>
+                                {% else %}
+                                <li><a href="{% url 'logoutpage' %}">Logout</a></li>
+                                {% if not user.is_superadmin %}
+                                <li><a href="{% url 'dashboard' %}">{{ user.first_name }} {{ user.last_name }}</a></li>
+                                {% endif %}
+                                    {% endif %}
+                                {% if user.is_superadmin %}
+                                <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                                {% endif %}
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4">
+                    <div class="gota_cart gotat_cart_1 text-end">
+                        <a href="{% url 'cart' %}"><i class="fal fa-shopping-cart"></i>My cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

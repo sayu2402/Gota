@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background-color: #f8f8f8;
+            padding: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .company-info {
+            float: right;
+            text-align: right;
+            margin-top: -20px; /* Adjust as needed */
+        }
+
+        .invoice-details {
+            margin-top: 20px;
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin-top: -20px; /* Adjust as needed */
+        }
+
+        .invoice-details p {
+            margin: 5px 0;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Invoice</h1>
+    </div>
+
+    <div class="company-info">
+        <p><strong>Gota Shoes</strong>
+        <br>Vayannur P O
+        <br>Kannur, 670650
+        <br>Near Panchayath Office
+        <br>Contact : 04902450470</p>
+    </div>
+
+    <div class="invoice-details">
+        <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+        <p><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+        <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}, {{ order.country }}, {{ order.pincode }}</p>
+    </div>
+
+    <table class="invoice-table">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order_product in order_products %}
+        <tr>
+            <td>{{ order_product.product.product_name }}</td>
+            <td>{{ order_product.quantity }}</td>
+            <td>{{ order_product.product_price }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+   
+
+    <div class="total">
+        <p> Total : {{ total_price }}
+         <!-- Add this section to display category discount, if applicable -->
+        {% if category_discount > 0 %}
+        <br><strong>Category Discount:</strong> {{ category_discount|floatformat:"2" }}
+        {% endif %}
+
+        <!-- Add this section to display product discount, if applicable -->
+        {% if product_discount > 0 %}
+            <br><strong>Product Discount:</strong> {{ product_discount|floatformat:"2" }}
+        {% endif %}
+
+        <br> Tax: {{ order.tax }}
+        {% if coupon_discount %}
+        <br> Coupon: {{ coupon_discount }}
+        {% endif %}
+        <br><strong>Grand Total:</strong>{{ total_price_after_discounts|floatformat:"2" }}</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Order Details -->
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table align-middle table-nowrap mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="text-center">
+                        {% comment %} <div class="form-check align-middle">
+                            <input class="form-check-input" type="checkbox" id="transactionCheck01" />
+                            <label class="form-check-label" for="transactionCheck01"></label>
+                        </div> {% endcomment %}
+                    </th>
+                    <th class="align-middle" scope="col">Order ID</th>
+                    <th class="align-middle" scope="col">Billing Name</th>
+                    <th class="align-middle" scope="col">Date</th>
+                    <th class="align-middle" scope="col">Total</th>
+                    <th class="align-middle" scope="col">Payment Status</th>
+                    <th class="align-middle" scope="col">View Details</th>
+                    <th class="align-middle" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td class="text-center">
+                        {% comment %} <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="transactionCheck{{ forloop.counter }}" />
+                            <label class="form-check-label" for="transactionCheck{{ forloop.counter }}"></label>
+                        </div> {% endcomment %}
+                    </td>
+                    <td><a href="#" class="fw-bold">#{{ order.order_number }}</a></td>
+                    <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                    <td>{{ order.created_at|date:"d M, Y" }}</td>
+                    <td>₹ {{ order.order_total }}</td>
+                    <td>
+                        {% if order.status == 'New' %}
+                        <span class="badge rounded-pill alert-warning">{{ order.status }}</span>
+                        {% elif order.status == 'Pending' %}
+                            <span class="badge rounded-pill alert-warning">{{ order.status }}</span>
+                        {% elif order.status == 'Shipped' %}
+                            <span class="badge rounded-pill alert-warning">{{ order.status }}</span>
+                        {% elif order.status == 'Delivered' %}
+                            <span class="badge rounded-pill alert-success">{{ order.status }}</span>
+                        {% elif order.status == 'Cancelled' %}
+                            <span class="badge rounded-pill alert-danger">{{ order.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                      <a href="{% url 'admin_order_details' order_id=order.id %}" class="btn btn-xs"> View details</a>
+                    </td>
+                    <td>
+                        {% if order.status != 'Cancelled' and order.status != 'Delivered' %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm font-sm rounded btn-brand dropdown-toggle" type="button" id="statusDropdown{{ order.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="material-icons md-edit"></i> Change Status
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-sm" aria-labelledby="statusDropdown{{ order.id }}">
+                                {% for status_code, status_label in order_status_choices %}
+                                    {% if status_code != order.status %}
+                                        <li>
+                                            <form action="{% url 'update_order_status' order.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="new_status" value="{{ status_code }}">
+                                                <button type="submit" class="dropdown-item">{{ status_label }}</button>
+                                            </form>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--End of Order Details-->
+
+
+{% endblock %}

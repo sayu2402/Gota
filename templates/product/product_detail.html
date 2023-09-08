@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* Custom CSS for the form controls */
+    .form-group select.form-control {
+        height: 40px; /* Adjust the height as needed */
+        font-size: 14px; /* Adjust the font size as needed */
+        width: 150px; /* Adjust the width (length) as needed */
+    }
+    
+    .add-to-cart-btn {
+        background-color: #007bff; /* Change the background color as desired */
+        color: #fff; /* Change the text color as desired */
+        padding: 10px 20px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    /* Hover effect */
+    .add-to-cart-btn:hover {
+        background-color: #0056b3; /* Change the background color on hover */
+    }
+
+    .category-offer-badge {
+        background-color: #28a745; /* Green background color for success */
+        color: #fff; /* White text color */
+        padding: 5px 10px; /* Adjust padding as needed */
+        border-radius: 5px; /* Rounded corners for the badge */
+        font-size: 14px; /* Adjust font size as needed */
+        margin-left: 10px; /* Add space between category and badge */
+    }
+
+    .red-text {
+        color: red;
+    }
+    
+</style>
+
+<div class="single_breadcrumb pt-25">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="row">
+                    <div class="col-xl-2 col-lg-2 col-md-2">
+                        <div class="single_product_tab">
+                            <div class="single_prodct">
+                                 <ul class="nav nav-tabs justify-content-center mb-55" id="dfde" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                            data-bs-target="#homde" type="button" role="tab" 
+                                            aria-selected="true"><img src="{{ single_product.images.url }}" alt=""></button>
+                                    </li>
+                                {% comment %}    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profidfdle"
+                                            type="button" role="tab" 
+                                            aria-selected="false"><img src="{{ single_product.images.url }}" alt=""></button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contadfdct"
+                                            type="button" role="tab" 
+                                            aria-selected="false"><img src="{{ single_product.images.url }}" alt=""></button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="kids-tab" data-bs-toggle="tab"
+                                            data-bs-target="#kidsdfd" type="button" role="tab" 
+                                            aria-selected="false"><img src="{{ single_product.images.url }}" alt=""></button>
+                                    </li>
+                                </ul> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-10 col-lg-10 col-md-10">
+                        <div class="single_preview_product">
+                            <div class="single-popup-view">
+                                <a class="popup-image" href="{{ single_product.images.url }}"></a>
+                            </div>
+                            <div class="tab-content" id="myTabefContent">
+                                <div class="tab-pane fade show active" id="homde" role="tabpanel" >
+                                    <div class="full-view">
+                                        <img src="{{ single_product.images.url }}" alt="">
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profidfdle" role="tabpanel" >
+                                    <div class="full-view">
+                                        <img src="{{ single_product.images.url }}" alt="">
+                                    </div>                                        
+                                </div>
+                                <div class="tab-pane fade" id="contadfdct" role="tabpanel">
+                                    <div class="full-view">
+                                        <img src="{{ single_product.images.url }}" alt="">
+                                    </div>                                        
+                                </div>
+                                <div class="tab-pane fade" id="kidsdfd" role="tabpanel">
+                                    <div class="full-view">
+                                        <img src="{{ single_product.images.url }}" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <form action="{% url 'add_cart' single_product.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="single_preview_content pl-30">
+                        <h2 class="title-5 edit-title border-bottom-0">{{ single_product.product_name }}</h2>
+                                    {% if category_offer %}
+                                        <span class="badge badge-success category-offer-badge">
+                                            Category Offer: {{ category_offer.off_percent }}% Discount
+                                        </span>
+                                    {% endif %}
+                                    {% if product_offer %}
+                                        <span class="badge badge-success category-offer-badge">
+                                            Product Offer: {{ product_offer.off_percent }} % Discount
+                                        </span>
+                                    {% endif %}
+                        <div class="s-price pt-30 mb-30">
+                            <span>₹ {{ single_product.price }}</span><br>
+                            
+                        </div>
+
+                        <div class="s-des">
+                            <p>{{ single_product.description }}</p>
+                        </div>
+                        <h5 class="red-text">Available Stock {{ single_product.stock }}</h5>
+                        <div class="form-group pt-3">
+                            <label for="colorSelect">Color:</label>
+                            <select class="form-control" id="colorSelect" name="color" required>
+                                <option value="disabled" selected>Select Color</option>
+                                {% for i in single_product.variation_set.colors %}
+                                    <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sizeSelect">Size:</label>
+                            <select class="form-control" id="sizeSelect" name="size" required>
+                                <option value="disabled" selected>Select Size</option>
+                                {% for i in single_product.variation_set.sizes %}
+                                    <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="viewcontent__action single_action pt-30">
+                            {% if single_product.stock <= 0 or not single_product.is_available %}
+                                <h5 class="text-danger">Out of Stock</h5>
+                            {% else %}
+                                <span><button id="addToCart" class="add-to-cart-btn">Add to Cart</button></span>
+                                    <a id="addToWishlist" href="#" class="icon-space-right"><i class="icon-heart"></i>Add to wishlist</a>
+                                
+                            {% endif %}
+                        </div>
+                        <div class="viewcontent__footer border-top-0 border-bottom pb-30">
+                            <ul>
+                                <li>Category:</li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    {{ single_product.category.category_name }}
+                                    
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add SweetAlert2 CSS and JS links -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add to Wishlist
+        const addToWishlistLink = document.getElementById("addToWishlist");
+        addToWishlistLink.addEventListener("click", function(e) {
+            e.preventDefault(); // Prevent the link from redirecting immediately
+            
+            const color = document.getElementById("colorSelect").value;
+            const size = document.getElementById("sizeSelect").value;
+            
+            // Create a FormData object to send the data
+            const formData = new FormData();
+            formData.append("color", color);
+            formData.append("size", size);
+
+            // Perform an AJAX request to add to wishlist
+            fetch("{% url 'add_wishlist' single_product.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: formData
+            })
+            .then(response => response.json()) // Assuming your view returns JSON response
+            .then(data => {
+                // Display SweetAlert notification
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Item Added to Wishlist',
+                    text: 'The selected item has been added to your wishlist.',
+                });
+            })
+            .catch(error => {
+                // Display SweetAlert error notification
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'You Should Login First.',
+                });
+                console.error(error);
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

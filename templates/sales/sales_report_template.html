@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Report</title>
+</head>
+<body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+       th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <h1>Sales Report</h1>
+    
+     <table>
+        <thead>
+           <tr>
+                <th>Order Number</th>
+                <th>Customer</th>
+                <th>Created At</th>
+                <th>Total</th>
+                <th>Product</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales_lists %}
+            <tr>
+                <td>{{ sale.order_number }}</td>
+                <td>{{ sale.user.first_name }} {{ sale.user.last_name }}</td>
+                <td>{{ sale.created_at }}</td>
+                <td>{{ sale.order_total }}</td>
+                <td>{{ sale.order_product.product_name }}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

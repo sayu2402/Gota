@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-layout about" data-background="{% static 'assets/img/slider/center_image2.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="breadcrumb-area text-center">
+                    <h2 class="page-title">OTP Verification</h2>
+                    <div class="breadcrumb-menu">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'signup' %}">Signup</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">OTP Verification</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="otp_verification_area">
+    <div class="container">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+                <h3 class="title-7">OTP Verification</h3>
+                <div class="otp_verification_wrapper">
+                    <form method="post" action="{% url 'signup' %}">
+                        {% include 'includes/alert.html' %}
+                        {% csrf_token %}
+                        <div class="input_wrap">
+                            <p>An OTP has been sent to your registered email address. Please enter the OTP below to verify your account.</p>
+                        </div>
+                        <div class="input_wrap">
+                            <label>OTP<span>*</span></label>
+                            <input type="text" name="otp" required>
+                        </div>
+                         
+                        <input type="hidden" name="email" value="{{ email }}">
+                        
+                        <div class="input_wrap">
+                            <button type="submit">Verify</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

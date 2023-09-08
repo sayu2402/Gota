@@ -1,0 +1,48 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Sales Report</h2>
+            <p>Generate and download sales reports here</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date">
+                </div>
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date">
+                </div>
+                <div class="mb-3">
+                    <label for="report_type" class="form-label">Report Type</label>
+                    <select class="form-select" id="report_type" name="report_type">
+                        <option value="pdf">PDF</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </form>
+        </div>
+    </div>
+    {% if sales_lists %}
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <h3>Sales Report Results</h3>
+            <p>Click the links below to download the generated reports:</p>
+            <ul>
+                <li><a href="{% url 'generate_sales_report' %}?report_type=pdf&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">Download PDF Report</a></li>
+                <li><a href="{% url 'generate_sales_report' %}?report_type=csv&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">Download CSV Report</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

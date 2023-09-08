@@ -1,0 +1,15 @@
+<!-- product_edit.html -->
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<!-- Add this in product_edit.html to debug single_product.id -->
+{{ single_product.id }}
+
+    <h1>Edit Product</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+{% endblock %}

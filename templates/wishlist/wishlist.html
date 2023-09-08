@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Custom CSS for the form controls */
+    .form-group select.form-control {
+        height: 40px;
+        font-size: 14px;
+        width: 150px;
+    }
+    
+    .add-to-cart-btn {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    /* Hover effect */
+    .add-to-cart-btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Wishlist table styling */
+    .table-shopping-cart {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* ... Your other styles ... */
+
+    /* Add margin to the container for the middle portion */
+    .middle-section {
+        margin-top: 50px; /* Adjust the margin as needed */
+        margin-bottom: 50px; /* Adjust the margin as needed */
+    }
+
+    /* Increase the width of the table */
+    .col-xl-10 {
+        width: 90%; /* Adjust the width as needed */
+        margin: auto;
+    }
+</style>
+
+<div class="page-layout about" data-background="{% static 'assets/img/slider/center_image2.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="breadcrumb-area text-center">
+                    <h2 class="page-title">Wishlist</h2>
+                    <div class="breadcrumb-menu">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'store' %}">Shop</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not wishlist %}
+    <!-- Empty Wishlist -->
+    <div class="text-center">
+        <img src="{% static 'assets\img\shop\empty-wishlist.png' %}" alt="Empty Cart Image">
+        <br>
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+    </div>
+{% else %}
+    <!-- Middle portion with increased table size and spacing -->
+    <div class="middle-section">
+        <form class="bg0 p-t-75 p-b-85">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12 col-xl-10 m-b-50"> <!-- Increase column size -->
+                        <div class="m-l-60 m-r--90 m-lr-0-xl">
+                            <div class="wrap-table-shopping-cart">
+                                <table class="table-shopping-cart">
+                                    <tr class="table_head">
+                                        <th class="column-1">Product</th>
+                                        <th class="column-2">Product Name</th>
+                                        <th class="column-3">Price</th>
+                                        <th class="column-5">Stock Status</th>
+                                        <th class="column-6"></th>
+                                        <th class="column-7"></th>
+                                    </tr>
+
+                                    {% for i in wishlist %}
+                                    <tr class="table_row">
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="{{ i.product.images.url }}" alt="IMG" style="max-width: 100px; max-height: 100px;">
+                                                <p class="text-control small">
+                                                    {% if i.variations.all %}
+                                                        {% for item in i.variations.all %}
+                                                        <strong>{{ item.variation_category | title }} : {{ item.variation_value | title }} </strong><br>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </td>
+                                        <td class="column-2">{{ i.product.product_name }}</td>
+                                        <td class="column-3">₹ {{ i.product.price }}</td>
+                                        <td class="column-5"><span class="in-stock">In stock</span></td>
+                                        <td class="column-6">
+                                            <button class="btn btn-block btn-outline-primary-2">
+                                                <i class="icon-cart-plus"></i><a href="{% url 'add_cart' i.product.id %}">Add to Cart</a>
+                                            </button>
+                                        </td>
+                                        <td class="column-7">
+                                            <form action="{% url 'delete_wishlist' i.product.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link text-danger">
+                                                    <i class="icon-close"></i> Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endif %}
+
+
+
+<div style="margin-top: 50px;"></div>
+{% endblock %}

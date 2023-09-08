@@ -1,0 +1,97 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+    <style>
+        .content-main {
+            /* Add styles for the main content section if needed */
+        }
+
+        .card {
+            /* Add styles for the card container if needed */
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        textarea[name="product_description"] {
+            height: 150px; /* Set your desired height here */
+            resize: vertical; /* Allow vertical resizing if needed */
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Additional styling for specific elements if needed */
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-6">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" action="{% url 'add_product' %}">
+                            {% csrf_token %}
+
+                            <div class="input_wrap">
+                                <label class="form-label">Product Name</label>
+                                {{ form.product_name }}
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                {{ form.description }}
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                {{ form.price }}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Images</label>
+                                {{ form.images }}
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Stock</label>
+                                {{ form.stock }}
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Is Available</label>
+                                {{ form.is_available }}
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Category</label>
+                                {{ form.category }}
+                            </div>
+                            
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+
+
+{% endblock %}

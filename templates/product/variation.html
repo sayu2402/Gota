@@ -1,0 +1,84 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<style>
+    /* CSS for the table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* Alternating row colors */
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    /* CSS for the table header */
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    /* CSS for the "Active" and "Inactive" cells */
+    td:last-child {
+      text-transform: capitalize;
+      color: {% if variation.is_active %}green{% else %}red{% endif %};
+    }
+
+    /* CSS for the "Toggle Status" button */
+    .status-form input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background-color 0.3s ease;
+    }
+
+    .status-form input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    /* Optional: Add some spacing between the table and other elements */
+    body {
+      padding: 20px;
+    }
+  </style>
+
+<table>
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Variation Category</th>
+        <th>Variation Value</th>
+        <th>Is Active</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for variation in variations %}
+          <tr>
+            <td>{{ variation.product.product_name }}</td>
+            <td>{{ variation.get_variation_category_display }}</td>
+            <td>{{ variation.variation_value }}</td>
+            <td>
+              <span id="active_{{ variation.id }}">{{ variation.is_active|yesno:"Active,Inactive" }}</span>
+              <form class="status-form" action="{% url 'update_is_active' variation.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="submit" value="Change Status">
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+
+  {% endblock %}

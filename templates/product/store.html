@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .page-layout {
+        margin-bottom: 30px; /* Adjust the value as needed */
+    }
+
+    /* Additional styling for the price filtering form */
+    .price-filter-form {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .price-filter-form label {
+        margin-right: 10px;
+    }
+
+    .price-filter-form input {
+        width: 80px;
+        padding: 5px;
+    }
+
+    .price-filter-form button {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    /* Styling for product cards */
+    .product-card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative; /* Add position:relative */
+    }
+
+    .product-offer {
+        position: absolute; /* Position the offer above the image */
+        top: 10px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the left position as needed */
+        font-size: 14px;
+        font-weight: bold;
+        color: #e74c3c; /* Choose a color that suits your design */
+        background-color: #fff; /* Set the background color to match the card background */
+        padding: 5px 10px;
+        z-index: 1; /* Ensure the offer is above the image */
+    }
+
+    .product-image img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .product-title {
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+    .product-price {
+        margin-top: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .page-layout {
+        margin-bottom: 30px; /* Adjust the value as needed */
+    }
+
+    /* Additional styling for the price filtering form and sorting dropdown */
+    .sorting-options {
+        margin-bottom: 20px;
+    }
+
+    .sorting-options label {
+        margin-right: 10px;
+    }
+
+    .sorting-options select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+</style>
+
+<div class="page-layout about" data-background="{% static 'assets/img/slider/center_image2.jpg' %}">
+    <div class="container">
+        {% if 'search' in request.path %}
+
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="breadcrumb-area text-center">
+                    <h2 class="page-title">Search results</h2>
+                    <div class="breadcrumb-menu">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'store' %}">Shop Here</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            
+        {% else %}
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="breadcrumb-area text-center">
+                    <h2 class="page-title">SHOP {% if category %} {{ category.category_name }}{% endif %}</h2>
+                    <div class="breadcrumb-menu">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'store' %}">Shop Here</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+ </div>
+<div class="store-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Sidebar Section: Display Categories -->
+                <div class="sidebar">
+                    <h4>Categories</h4>
+                    <ul class="category-item">
+                        <li><a href="{% url 'store' %}">All</a></li>
+                        {% for category in links %}
+                        <li><a href="{{ category.get_url }}">{{ category.category_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <!-- Main Content Section: Display Products -->
+
+                <!-- Sorting options dropdown -->
+                {% if products %}
+
+                <div class="sorting-options">
+                    <label for="sorting">Sort by:</label>
+                    <select id="sorting" name="sorting">
+                        <option value="">Default</option>
+                        <option value="price_asc">Price Low to High</option>
+                        <option value="price_desc">Price High to Low</option>
+                        <option value="name_asc">Name A to Z</option>
+                        <option value="name_desc">Name Z to A</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                 <!-- Price Filtering Form -->
+                {% if products %}
+                <div class="price-filter-form">
+                    <form method="GET" action="">
+                        <label for="min_price">Min Price:</label>
+                        <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}">
+                        <label for="max_price">Max Price:</label>
+                        <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}">
+                        <button type="submit">Apply Filters</button>
+                    </form>
+                </div>
+                {% endif %}
+
+                 <!-- Product Listing -->
+                <div class="product-list">
+                    {% if category %}
+                    <h1>{{ category.category_name }}</h1>
+                    {% endif %}
+                    <div class="row">
+                        {% if product_count > 0 %}
+                        <div class="col-md-12 mb-4">
+                            <h5>Total results: {{ product_count }}</h5>
+                        </div>
+                        {% endif %}
+
+                        {% if products %}
+                            {% for product in products %}
+                            <div class="col-md-4 mb-4">
+                                <div class="product-card">
+                                    <!-- Product Offer -->
+                                    {% for product_offer in product_offers %}
+                                        {% if product_offer.product == product %}
+                                            <p class="product-offer">Offer: {{ product_offer.off_percent }}% Discount</p>
+                                        {% endif %}
+                                    {% endfor %}
+                
+                                    <!-- Product Image -->
+                                    <div class="product-image">
+                                        <a href="{{ product.get_url }}">
+                                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                                        </a>
+                                    </div>
+                
+                                    <div class="product-info">
+                                        <h5 class="product-title">
+                                            <a href="{{ product.get_url }}">{{ product.product_name }}</a>
+                                        </h5>
+                                        <p class="product-price">₹{{ product.price }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- No products found for the selected price range -->
+                            <div class="col-md-12 mb-4">
+                                <h2>No Result Found Try Again</h2>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('sorting').addEventListener('change', function() {
+        const selectedOption = this.value;
+        const currentUrl = window.location.href;
+        const urlWithSorting = updateQueryStringParameter(currentUrl, 'sorting', selectedOption);
+        window.location.href = urlWithSorting;
+    });
+
+    function updateQueryStringParameter(uri, key, value) {
+        const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        const separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
+        } else {
+            return uri + separator + key + "=" + value;
+        }
+    }
+</script>
+
+{% endblock %}

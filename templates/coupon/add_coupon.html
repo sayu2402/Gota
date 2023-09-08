@@ -1,0 +1,99 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<style>
+.coupon-management {
+    margin: 20px;
+}
+
+.coupon-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.coupon-form label {
+    font-weight: bold;
+}
+
+.coupon-form input[type="text"],
+.coupon-form input[type="number"] {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.coupon-form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.coupon-list {
+    list-style: none;
+    padding: 0;
+}
+
+.coupon-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.expired {
+    color: red;
+    font-weight: bold;
+}
+
+</style>
+
+<div class="coupon-management">
+    <h2>Manage Coupons</h2>
+
+    <form method="post" class="coupon-form">
+        {% csrf_token %}
+        <label for="coupon_code">Coupon Code:</label>
+        <input type="text" id="coupon_code" name="coupon_code" required>
+        
+        <label for="discount_price">Discount Price:</label>
+        <input type="number" id="discount_price" name="discount_price" required>
+        
+        <label for="minimum_amount">Minimum Amount:</label>
+        <input type="number" id="minimum_amount" name="minimum_amount" required>
+        
+        <button type="submit">Create Coupon</button>
+    </form>
+
+    <h3>Existing Coupons</h3>
+    <ul class="coupon-list">
+        {% for coupon in coupons %}
+            <li class="coupon-item">
+                <strong>Coupon Code:</strong> {{ coupon.coupon_code }}
+                {% if coupon.is_expired %}
+                    <span class="expired">(Expired)</span>
+                {% endif %}
+                <br>
+                <strong>Discount Price:</strong> {{ coupon.discount_price }}
+                <br>
+                <strong>Minimum Amount:</strong> {{ coupon.minimum_amount }}
+                <br>
+                <a href="{% url 'edit_coupon' coupon.id %}" class="edit-button" style="padding: 5px 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; text-decoration: none;">Edit</a>
+                <form method="post" action="{% url 'delete_coupon' coupon.id %}" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button" style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

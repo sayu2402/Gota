@@ -1,0 +1,61 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+    <h1>Add Category</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="category_name">Category Name:</label>
+        <input type="text" id="category_name" name="category_name" required>
+
+        <label for="slug">Slug:</label>
+        <input type="text" id="slug" name="slug">
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4"></textarea>
+
+        <label for="cart_image">Cart Image:</label>
+        <input type="file" id="cart_image" name="cart_image">
+
+        <input type="submit" value="Add Category">
+    </form>
+
+    <style>
+        form {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}

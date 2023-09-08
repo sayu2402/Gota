@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-layout about" data-background="{% static 'assets/img/slider/center_image2.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="breadcrumb-area text-center">
+                    <h2 class="page-title">Account SignUp</h2>
+                        <div class="breadcrumb-menu">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'signup' %}">signup</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="login_register_area">
+    <div class="container">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+                <h3 class="title-7">SignUp</h3>
+                <div class="login_wrapper">
+
+                    <form action="{% url 'signup' %}" method="POST">
+                        
+                        {% include 'includes/alert.html' %}
+                        
+                        {% csrf_token %}
+                        <div class="input_wrap">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>First Name<span>*</span></label>
+                                    {% comment %} <input type="text" name="first_name"> {% endcomment %}
+                                    {{ form.first_name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Last Name<span>*</span></label>
+                                    {% comment %} <input type="text" name="last_name"> {% endcomment %}
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_wrap">
+                            <label>Email<span>*</span></label>
+                            {% comment %} <input type="email" name="email"> {% endcomment %}
+                            {{ form.email }}
+                        </div>
+                        <div class="input_wrap">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Password<span>*</span></label>
+                                    {% comment %} <name="password1"> {% endcomment %}
+                                    {{ form.password }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Confirm Password<span>*</span></label>
+                                    {% comment %} <name="password2"> {% endcomment %}
+                                    {{ form.confirm_password }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_wrap">
+                            <button type="submit">Sign Up</button>
+                        </div>
+                        {{ form.email.errors }}
+                        {{ form.non_field.errors }}
+                        <div class="input_wrap">
+                            <h6 style="display: inline;">Already have an Account? </h6><a href="{% url 'loginpage' %}" style="display: inline;">Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

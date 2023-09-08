@@ -1,0 +1,57 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+    <div class="delete-category">
+        <h1>Delete Category</h1>
+        <p>Are you sure you want to delete "{{ category.category_name }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Confirm Delete</button>
+        </form>
+    </div>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        margin: 20px;
+    }
+
+    .delete-category {
+        width: 50%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 30px;
+    }
+
+    form {
+        display: inline-block;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #c82333;
+    }
+</style>
+
+{% endblock %}

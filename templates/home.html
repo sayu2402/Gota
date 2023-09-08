@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!doctype html>
+<html class="no-js" lang="en">
+
+
+<body>
+    <!-- slider start -->
+    <div class="slider-active swiper-container height">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide slider-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="slider_images">
+                                <img class="back" src="{% static 'assets/img/shop/slider-img-1.png' %}" alt="">
+                                <img class="top" src="{% static 'assets/img/slider/text.png' %}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- slider end -->
+
+        <!-- categories area start -->
+    <div class="categories_area pt-85 mb-150">
+        <div class="container-fluid">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="section-wrapper text-center mb-35">
+                    <h2 class="section-title">Explore Our Bestsellers</h2>
+                    <p>Step into style and comfort with our curated collection of top-selling shoes<br> designed to elevate your every stride.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="categories__tab">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home">
+                                <div class="container">
+                                    <div class="product-active h-2-product-active swiper-container">
+                                        <div class="swiper-wrapper">
+                                            <!-- Display the last three most ordered products -->
+                                            {% for order_product in most_ordered_products %}
+                                                <div class="product-item swiper-slide wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                                                    <div class="product">
+                                                        <div class="product__thumb">
+                                                            <a href="{{  order_product.product.get_url }}">
+                                                                <img class="product-primary" src="{{ order_product.product.images.url }}" alt="{{ order_product.product.product_name }}">
+                                                            </a>
+                                                        </div>
+                                                        <div class="product-info mb-10">
+                                                            <div class="product_category">
+                                                                <span>Category : {{ order_product.product.category.category_name }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product__name">
+                                                            <h4><a href="{{ order_product.product.get_url }}">{{ order_product.product.product_name }}</a></h4>
+                                                            <div class="pro-price">
+                                                                <p class="p-absoulute pr-1"><span>₹</span>{{ order_product.product.price }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <!-- End of displaying the last two most ordered products -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- categories area end -->
+
+
+    <!-- product show case area start  -->
+    <div class="show-case lightblue pt-125">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="section-wrapper text-center mb-35">
+                        <h4 class="sub-title">Best Offer For the Product {{last_product_offer.off_percent }} % OFF</h4>
+                        <h2 class="section-title text-white">{{ last_product_offer.product.product_name }}</h2>
+                        <p class="d-none d-lg-block">Get the Best Deals on Our Featured Product. Don't miss out on exclusive discounts and<br> limited-time offers, bringing you exceptional value and quality.</p>
+                    </div>
+                </div>
+                <div class="case-info text-center">
+                    <span class="offer-text d-none d-lg-block">hot deal<i class="far fa-stars"></i></span>
+                    <h2 class="back1-text d-none d-lg-block">top</h2>
+                    <h2 class="back-text d-none d-lg-block">limited</h2>
+                    <a href="{{ last_product_offer.product.get_url }}"><img class="banar-product" src="{% static 'assets/img/shop/product4.png' %}" alt=""></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- product show case area end  -->
+
+
+
+    <!-- new product area start -->
+    <div class="new_product_area mb-80">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <div class="section-wrapper text-center mb-35">
+                                <h2 class="section-title"><a href="#">Explore Our New arrivals</a></h2>
+                                <p>Commodo sociosqu venenatis cras dolor sagittis integer luctus sem primis<br> eget
+                                    maecenas sed urna malesuada.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="product-active2 swiper-container">
+                            <div class="swiper-wrapper">
+                                <!-- Display the last three most ordered products -->
+                            {% for product in last_added_products %}
+                                <div class="product-item swiper-slide  wow fadeInLeft " data-wow-duration=".9s" data-wow-delay=".3s">
+                                    <div class="product product-2">
+                                        <div class="product__thumb">
+                                            <a href="{{ product.get_url }}">
+                                                <img class="product-primary" src="{{ product.images.url }}"
+                                                    alt="{{ product.product_name }}"></a>
+                                            <div class="product__update">
+                                                    <a class="#">new</a>
+                                            </div>
+                                            <div class="product-info mb-10">
+                                                <div class="product_category">
+                                                    <span>{{ product.category.category_name }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="product__name">
+                                                <h4><a href="{{ product.get_url }}">{{ product.product_name }} </a></h4>
+                                                <div class="pro-price">
+                                                    <p class="p-absoulute pr-1"><span>₹</span>{{ product.price }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <!--End of Latest Products-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 padding-left">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"></div>
+                    <div class="section-wrapper text-center mb-35">
+                        <h2 class="section-title">Explore Our Premium Shoes</h2>
+                        <p>Elevate your style with the epitome of luxury and craftsmanship<br> in our range of premium shoes.</p>
+                    </div>
+                    <div class="row">
+                        <div class="product-active2 swiper-container">
+                            <div class="swiper-wrapper">
+                                <!-- Display the last three most ordered products -->
+                            {% for product in most_expensive_shoes %}
+                                <div class="product-item swiper-slide  wow fadeInLeft " data-wow-duration=".9s" data-wow-delay=".4s">
+                                    <div class="product product-2">
+                                        <div class="product__thumb">
+                                            <a href="{{ product.get_url }}">
+                                                <img class="product-primary" src="{{ product.images.url }}" alt="product_image"></a>
+                                            <div class="product-info mb-10">
+                                                <div class="product_category">
+                                                    <span>{{ product.category.category_name }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="product__name">
+                                                <h4><a href="{{ product.get_url }}">{{ product.product_name }}</a></h4>
+                                                <div class="pro-price">
+                                                    <p class="p-absoulute pr-1"><span>₹</span>{{ product.price }}</p></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- new product area end -->
+
+</body>
+
+</html>
+
+
+{% endblock %}
