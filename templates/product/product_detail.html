@@ -37,7 +37,27 @@
     .red-text {
         color: red;
     }
-    
+    #homde{
+        position: relative;
+        width: 600px;
+        height: 400px;
+        overflow: hidden;
+       
+    }
+    #homde img{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -o-object-fit: cover;
+        object-fit: cover;
+        transform: scale(var(--zoom, 1));
+        transform-origin:  var(--x) var(--y);
+        transition: transform 0.3s ease;
+    }
+    #homde:hover{
+        --zoom: 3;
+        cursor: zoom-in;
+    }
 </style>
 
 <div class="single_breadcrumb pt-25">
@@ -84,7 +104,7 @@
                                         <img src="{{ single_product.images.url }}" alt="">
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="profidfdle" role="tabpanel" >
+                                {% comment %} <div class="tab-pane fade" id="profidfdle" role="tabpanel" >
                                     <div class="full-view">
                                         <img src="{{ single_product.images.url }}" alt="">
                                     </div>                                        
@@ -98,7 +118,7 @@
                                     <div class="full-view">
                                         <img src="{{ single_product.images.url }}" alt="">
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                         </div>
                     </div>
@@ -223,5 +243,24 @@
     });
 </script>
 
+<script>
+    document.querySelectorAll('#homde').forEach(elem => {
+        let x, y, width, height;
+        const size = elem.getBoundingClientRect();
+
+        x = size.x;
+        y = size.y;
+        width = size.width;
+        height = size.height;
+
+        elem.onmousemove = e => {
+            const horizontal = (e.clientX - x) / width * 100;
+            const vertical = (e.clientY - y) / height * 100;
+
+            elem.style.setProperty('--x', horizontal + '%');
+            elem.style.setProperty('--y', vertical + '%');
+        };
+    });
+</script>
 
 {% endblock %}
